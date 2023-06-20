@@ -233,9 +233,14 @@ class PrinterState:
             if total_layers is None:
                 total_layers = file_metadata.get('layer_count')
 
+            print('max_z', max_z)
+            print('current_z', current_z)
+
             first_layer_height = file_metadata.get('first_layer_height')
             layer_height = file_metadata.get('layer_height')
             layer_heights_in_metadata = layer_height is not None and first_layer_height is not None
+            print('first_layer_height', first_layer_height)
+            print('layer_height', layer_height)
 
             if total_layers is None and layer_heights_in_metadata:
                 total_layers = math.ceil((file_metadata.get('object_height') - first_layer_height / file_metadata.get('layer_height') + 1))
