@@ -13,7 +13,7 @@ import logging
 import time
 import threading
 
-POST_PIC_INTERVAL_SECONDS = 10.0
+POST_PIC_INTERVAL_SECONDS = 30.0
 if os.environ.get('DEBUG'):
     POST_PIC_INTERVAL_SECONDS = 3.0
 
