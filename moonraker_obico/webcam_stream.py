@@ -58,6 +58,8 @@ class WebcamStreamer:
 
     @backoff.on_exception(backoff.expo, Exception)
     def mjpeg_loop(self):
+        MAX_FPS = 2
+        MIN_INT_FRMS = 1.0 / MAX_FPS
         bandwidth_throttle = 0.004
 
         self.mjpeg_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -72,7 +74,7 @@ class WebcamStreamer:
                 time.sleep(1)
                 continue
 
-            time.sleep( max(last_frame_sent+0.5-time.time(), 0) )  # No more than 1 frame per 0.5 second
+            time.sleep( max(last_frame_sent+MIN_INT_FRMS-time.time(), 0) )
 
             jpg = None
             try:
