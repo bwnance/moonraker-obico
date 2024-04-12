@@ -95,28 +95,41 @@ class Panel(ScreenPanel):
 
     def update_qr_code(self, link_url):
         # Generate a QR code
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=10,
-            border=4,
-        )
-        qr.add_data(link_url)
-        qr.make(fit=True)
+        # qr = qrcode.QRCode(
+        #     version=1,
+        #     error_correction=qrcode.constants.ERROR_CORRECT_L,
+        #     box_size=10,
+        #     border=4,
+        # )
+        # qr.add_data(link_url)
+        # qr.make(fit=True)
 
-        img = qr.make_image(fill_color="black", back_color="white")
-        img_byte_arr = BytesIO()
-        img.save(img_byte_arr, format='PNG')
-        img_byte_arr = img_byte_arr.getvalue()
+        # img = qr.make_image(fill_color="black", back_color="white")
+        # img_byte_arr = BytesIO()
+        # img.save(img_byte_arr, format='PNG')
+        # img_byte_arr = img_byte_arr.getvalue()
 
-        # Load the QR code image into a GdkPixbuf
-        loader = GdkPixbuf.PixbufLoader.new_with_type('png')
-        loader.write(img_byte_arr)
-        loader.close()
-        pixbuf = loader.get_pixbuf()
+        # # Load the QR code image into a GdkPixbuf
+        # loader = GdkPixbuf.PixbufLoader.new_with_type('png')
+        # loader.write(img_byte_arr)
+        # loader.close()
+        # pixbuf = loader.get_pixbuf()
 
-        # Set the QR code to the image widget
+        # # Set the QR code to the image widget
+        # self.qr_image.set_from_pixbuf(pixbuf)
+
+        if self._screen.vertical_mode:
+            width = self._screen.width * 0.9
+            height = self._screen.height / 4
+        else:
+            width = self._screen.width * .25
+            height = self._gtk.content_height * 0.47
+        filename = '/home/biqu/KlipperScreen/./docs/img/panels/extrude.png'
+        # pixbuf = self.get_file_image('/home/biqu/KlipperScreen/./docs/img/panels/console.png', width, height)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filename, int(width), int(height))
+
         self.qr_image.set_from_pixbuf(pixbuf)
+
 
     def reset_action_container(self):
         pass
