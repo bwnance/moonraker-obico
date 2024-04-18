@@ -130,11 +130,12 @@ class WebcamStreamer:
                         return '-c:v {}'.format(encoder)
 
             raise Exception('No ffmpeg found, or ffmpeg does NOT support h264_omx/h264_v4l2m2m encoding.')
-
+        webcam_config = self.config.webcam
+        stream_url = webcam_config.stream_url
         if self.app_model.linked_printer.get('is_pro'):
             # camera-stream is introduced in Crowsnest V4
             try:
-                camera_streamer_mp4_url = 'http://127.0.0.1:8080/video.mp4'
+                camera_streamer_mp4_url = stream_url
                 _logger.info('Trying to start ffmpeg using camera-streamer H.264 source')
                 # There seems to be a bug in camera-streamer that causes to close .mp4 connection after a random period of time. In that case, we rerun ffmpeg
                 self.start_ffmpeg('-re -i {} -c:v copy'.format(camera_streamer_mp4_url), retry_after_quit=True)
@@ -147,8 +148,7 @@ class WebcamStreamer:
 
         encoder = h264_encoder()
 
-        webcam_config = self.config.webcam
-        stream_url = webcam_config.stream_url
+
         if not stream_url:
             raise Exception('stream_url not configured. Unable to stream the webcam.')
 
