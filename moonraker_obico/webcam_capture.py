@@ -133,7 +133,7 @@ class JpegPoster:
                 viewing_boost = self.need_viewing_boost.wait(1)
                 if viewing_boost:
                     self.need_viewing_boost.clear()
-                    repeats = 3 if self.app_model.linked_printer.get('is_pro') else 1 # Pro users get better viewing boost
+                    repeats = 3 
                     for _ in range(repeats):
                         self.post_pic_to_server(viewing_boost=True)
                     continue

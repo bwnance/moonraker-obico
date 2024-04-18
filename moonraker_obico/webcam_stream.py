@@ -130,18 +130,19 @@ class WebcamStreamer:
                         return '-c:v {}'.format(encoder)
 
             raise Exception('No ffmpeg found, or ffmpeg does NOT support h264_omx/h264_v4l2m2m encoding.')
-
-        if self.app_model.linked_printer.get('is_pro'):
-            # camera-stream is introduced in Crowsnest V4
-            try:
-                camera_streamer_mp4_url = 'http://127.0.0.1:8080/video.mp4'
-                _logger.info('Trying to start ffmpeg using camera-streamer H.264 source')
-                # There seems to be a bug in camera-streamer that causes to close .mp4 connection after a random period of time. In that case, we rerun ffmpeg
-                self.start_ffmpeg('-re -i {} -c:v copy'.format(camera_streamer_mp4_url), retry_after_quit=True)
-                return
-            except Exception as e:
-                _logger.info(f'No camera-stream H.264 source found. Continue to legacy streaming: {e}')
-                pass
+        webcam_config = self.config.webcam
+        stream_url = webcam_config.stream_url
+        # if self.app_model.linked_printer.get('is_pro'):
+        # camera-stream is introduced in Crowsnest V4
+        try:
+            camera_streamer_mp4_url = stream_url
+            _logger.info('Trying to start ffmpeg using camera-streamer H.264 source')
+            # There seems to be a bug in camera-streamer that causes to close .mp4 connection after a random period of time. In that case, we rerun ffmpeg
+            self.start_ffmpeg('-re -i {} -c:v copy'.format(camera_streamer_mp4_url), retry_after_quit=True)
+            return
+        except Exception as e:
+            _logger.info(f'No camera-stream H.264 source found. Continue to legacy streaming: {e}')
+            pass
 
         # The streaming mechansim for pre-1.0 OctoPi versions
 
@@ -166,9 +167,9 @@ class WebcamStreamer:
 
         bitrate = bitrate_for_dim(img_w, img_h)
         fps = webcam_config.get_target_fps(fallback_fps=25)
-        if not self.app_model.linked_printer.get('is_pro'):
-            fps = min(8, fps) # For some reason, when fps is set to 5, it looks like 2FPS. 8fps looks more like 5
-            bitrate = int(bitrate/2)
+        # if not self.app_model.linked_printer.get('is_pro'):
+        #     fps = min(8, fps) # For some reason, when fps is set to 5, it looks like 2FPS. 8fps looks more like 5
+        #     bitrate = int(bitrate/2)
 
         self.start_ffmpeg('-re -i {} -filter:v fps={} -b:v {} -pix_fmt yuv420p -s {}x{} {}'.format(stream_url, fps, bitrate, img_w, img_h, encoder))
 
